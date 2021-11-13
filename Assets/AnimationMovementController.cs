@@ -26,8 +26,6 @@ public class AnimationMovementController : MonoBehaviour
 
     Camera m_camera;
 
-    // Camera camera;
-
     // Awake is called earlier than Start in Unity's event life cycle
     void Awake()
     {
@@ -81,40 +79,26 @@ public class AnimationMovementController : MonoBehaviour
 /*
 Function: onMovementInput
 Description: Handles the direction the character will be moving when 
-movement input is entered. 
+movement input is entered. Changes direction based on camera angle.
 
 */
 
-
     void onMovementInput (InputAction.CallbackContext context)
     {
+        m_camera = Camera.main;
         currentMovementInput = context.ReadValue<Vector2>();
-        currentMovement.x = currentMovementInput.x * walkMultiplier;
-        currentMovement.z = currentMovementInput.y * walkMultiplier;
-        currentRunMovement.x = currentMovementInput.x * runMultiplier;
-        currentRunMovement.z = currentMovementInput.y * runMultiplier;
+        currentMovement = m_camera.transform.forward * currentMovementInput.y +
+                           m_camera.transform.right * currentMovementInput.x;
+        currentMovement.y = 0;
+        currentMovement = currentMovement.normalized * walkMultiplier;
+        
+        currentRunMovement = m_camera.transform.forward * currentMovementInput.y +
+                           m_camera.transform.right * currentMovementInput.x;
+        currentRunMovement.y = 0;
+        currentRunMovement = currentRunMovement.normalized * runMultiplier;
 
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
     }
-
-
-
-    // void onMovementInput (InputAction.CallbackContext context)
-    // {
-    //     m_camera = Camera.main;
-    //     currentMovementInput = context.ReadValue<Vector2>();
-    //     currentMovement = m_camera.transform.forward * currentMovementInput.y +
-    //                        m_camera.transform.right * currentMovementInput.x;
-    //     currentMovement.y = 0;
-    //     currentMovement = currentMovement.normalized * walkMultiplier;
-        
-    //     currentRunMovement = m_camera.transform.forward * currentMovementInput.y +
-    //                        m_camera.transform.right * currentMovementInput.x;
-    //     currentRunMovement.y = 0;
-    //     currentRunMovement = currentRunMovement.normalized * runMultiplier;
-
-    //     isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-    // }
 
     void handleAnimation()
     {
